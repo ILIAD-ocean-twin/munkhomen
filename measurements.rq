@@ -16,6 +16,8 @@
 #+   "observedProperty": "?_observedProperty",
 #+   "$anchor": "observedProperty",         
 #+   "time": "?time",
+#+   "longitud": "?long",
+#+   "latitude": "?lat",
 #+   "sensor": "?sensor",
 #+   "edge_device": "?edge_device",
 #+   "value": "?value",
@@ -34,7 +36,7 @@ PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX oim-jf: <https://w3id.org/iliad/oim/jellyfish>
 
 
-select ?time ?sensor ?edge_device ?value ?unit
+select ?time ?lat ?long ?sensor ?edge_device ?value ?unit
 from <http://w3id.org/iliad/dataset/munkhomen>
 from <http://qudt.org/2.1/vocab/unit>
 where {
@@ -45,6 +47,7 @@ where {
   ?col a sosa:ObservationCollection ;
       sosa:resultTime ?time ;
       sosa:madeBySensor ?sensorURI ;
+      sosa:hasFeatureOfInterest ?feature_URI ;
       sosa:hasMember ?obs .
   ?sensorURI rdfs:label ?sensorlabel ;
        dct:type ?edge_device .
@@ -53,6 +56,8 @@ where {
   ?res qudt:numericValue ?value ;
      qudt:unit ?unitURI .
   ?unitURI rdfs:label ?unit .
+  feature_URI wgs84:lat ?lat ;
+  	wgs84:long ?long . 
   FILTER (lang(?unit) = 'en')
   BIND (strafter(str(?sensorURI),"http://w3id.org/iliad/munkhomen/sensor/") AS ?sensor)
   OPTIONAL { ?s ?p ?_observedProperty }
