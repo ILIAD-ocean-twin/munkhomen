@@ -45,8 +45,8 @@ where {
       sosa:resultTime ?time ;
       sosa:madeBySensor ?sensorURI ;
       sosa:hasMember ?obs .
-  ?sensorURI rdfs:label ?sensor ;
-       dct:type ?edge_device .
+  ?sensorURI rdfs:label ?sensor .
+       #dct:type ?edge_device .
   ?obs sosa:observedProperty ?observedPropertyURI ;
       sosa:hasResult ?res .
   ?res qudt:numericValue ?value ;
