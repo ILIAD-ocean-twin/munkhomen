@@ -17,7 +17,6 @@
 #+   "$anchor": "observedProperty",         
 #+   "time": "?time",
 #+   "sensor": "?sensor",
-#+   "edge_device": "?edge_device",
 #+   "value": "?value",
 #+   "unit": "?unit",
 #+ }
@@ -34,7 +33,7 @@ PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX oim-jf: <https://w3id.org/iliad/oim/jellyfish>
 
 
-select ?time ?sensor ?edge_device ?value ?unit
+select ?time ?sensor ?value ?unit
 from <http://w3id.org/iliad/dataset/munkhomen>
 where {
   BIND (IF(?_observedProperty="wind_direction",
