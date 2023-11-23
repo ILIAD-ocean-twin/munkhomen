@@ -56,7 +56,7 @@ where {
   ?res qudt:numericValue ?value ;
      qudt:unit ?unitURI .
   ?unitURI rdfs:label ?unit .
-  feature_URI wgs84:lat ?lat ;
+  ?feature_URI wgs84:lat ?lat ;
   	wgs84:long ?long . 
   FILTER (lang(?unit) = 'en')
   BIND (strafter(str(?sensorURI),"http://w3id.org/iliad/munkhomen/sensor/") AS ?sensor)
