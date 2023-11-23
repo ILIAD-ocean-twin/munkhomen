@@ -17,6 +17,7 @@
 #+   "$anchor": "observedProperty",         
 #+   "time": "?time",
 #+   "sensor": "?sensor",
+#+   "edge_device": "?edge_device",
 #+   "value": "?value",
 #+   "unit": "?unit",
 #+ }
@@ -33,8 +34,9 @@ PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX oim-jf: <https://w3id.org/iliad/oim/jellyfish>
 
 
-select ?time ?sensor ?value ?unit
+select ?time ?sensor ?edge_device ?value ?unit
 from <http://w3id.org/iliad/dataset/munkhomen>
+from <http://qudt.org/2.1/vocab/unit>
 where {
   BIND (IF(?_observedProperty="wind_direction",
            URI("http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/52"),
@@ -44,12 +46,15 @@ where {
       sosa:resultTime ?time ;
       sosa:madeBySensor ?sensorURI ;
       sosa:hasMember ?obs .
-  ?sensorURI rdfs:label ?sensor .
-       #dct:type ?edge_device .
+  ?sensorURI rdfs:label ?sensorlabel ;
+       dct:type ?edge_device .
   ?obs sosa:observedProperty ?observedPropertyURI ;
       sosa:hasResult ?res .
   ?res qudt:numericValue ?value ;
-     qudt:unit ?unit .
+     qudt:unit ?unitURI .
+  ?unitURI rdfs:label ?unit .
+  FILTER (lang(?unit) = 'en')
+  BIND (strafter(str(?sensorURI),"http://w3id.org/iliad/munkhomen/sensor/") AS ?sensor)
   OPTIONAL { ?s ?p ?_observedProperty }
   #FILTER ( ?time > ?_dateinput )
 } 
