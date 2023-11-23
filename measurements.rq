@@ -1,0 +1,56 @@
+#+ summary: "Retrieve the average value for a specific physioChemical property, in a specific geospatial region (e.g., POLYGON((15.130859375 53.608839752333274,22.25 53.608839752333274,22.25 50.69823629030404,15.130859375 50.69823629030404,15.130859375 53.608839752333274)))"
+#+ description: "NOTE: make sure response content type is application/json"
+#+ endpoint: "https://www.foodie-cloud.org/sparql"
+#+ tags: [ "json" ]
+#+ method: "GET"
+#+ enumerate:
+#+   - observedProperty:
+#+     - air_temperature
+#+     - wind_direction
+#+     - wind_speed
+#+     - sea_water_salinity
+#+     - sea_water_temperature
+#+ defaults:
+#+   - observedProperty: air_temperature
+#+ transform: { 
+#+   "observedProperty": "?_observedProperty",
+#+   "$anchor": "observedProperty",         
+#+   "time": "?time",
+#+   "sensor": "?sensor",
+#+   "edge_device": "?edge_device",
+#+   "value": "?value",
+#+   "unit": "?unit",
+#+ }
+
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dct:  <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX qudt: <http://qudt.org/schema/qudt/> 
+PREFIX unit: <http://qudt.org/vocab/unit/> 
+PREFIX sosa:  <http://www.w3.org/ns/sosa/> 
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX oim-jf: <https://w3id.org/iliad/oim/jellyfish>
+
+
+select ?time ?sensor ?edge_device ?value ?unit
+from <http://w3id.org/iliad/dataset/munkhomen>
+where {
+  BIND (IF(?_observedProperty="wind_direction",
+           URI("http://dd.eionet.europa.eu/vocabulary/aq/meteoparameter/52"),
+           URI(CONCAT("http://vocab.nerc.ac.uk/standard_name/",?_observedProperty))
+          ) AS ?observedPropertyURI)
+  ?col a sosa:ObservationCollection ;
+      sosa:resultTime ?time ;
+      sosa:madeBySensor ?sensorURI ;
+      sosa:hasMember ?obs .
+  ?sensorURI rdfs:label ?sensor ;
+       dct:type ?edge_device .
+  ?obs sosa:observedProperty ?observedPropertyURI ;
+      sosa:hasResult ?res .
+  ?res qudt:numericValue ?value ;
+     qudt:unit ?unit .
+  
+  #FILTER ( ?time > ?_dateinput )
+} 
