@@ -51,6 +51,6 @@ where {
       sosa:hasResult ?res .
   ?res qudt:numericValue ?value ;
      qudt:unit ?unit .
-  
+  OPTIONAL { ?s ?p ?_observedProperty }
   #FILTER ( ?time > ?_dateinput )
 } 
